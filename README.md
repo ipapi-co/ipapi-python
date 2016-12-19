@@ -4,6 +4,10 @@
 ## Installation
 
 ```
+pip install ipapi
+```
+or
+```
 python setup.py install
 ```
 
