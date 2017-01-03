@@ -6,55 +6,59 @@ import sys
 import argparse
 from requests import get
 
-headers = {'user-agent': 'ipapi/ipapi-python/0.4'}
+
 API_KEY = ''
 
+headers    = {'user-agent': 'ipapi/ipapi-python/0.5.1'}
 
-def location(ip=None, key=None):
-    ''' Get complete geolocation data (as JSON) for given IP address '''
-    if ip:
-        url = 'https://ipapi.co/{}/json/'.format(ip)
+field_list = ['ip', 'city', 'region', 'country', 'postal',
+              'latitude', 'longitude', 'timezone', 'latlong']
+
+
+
+def location(ip=None, key=None, field=None):
+    ''' Get geolocation data for a given IP address
+        If field is specified, get specific field as text 
+        Else get complete location data as JSON 
+    '''
+
+    if field and (field not in field_list):
+        return 'Invalid field'
+
+    if field:
+        if ip:
+            url = 'https://ipapi.co/{}/{}/'.format(ip, field)
+        else:
+            url = 'https://ipapi.co/{}/'.format(field)
     else:
-        url = 'https://ipapi.co/json/'
+        if ip:
+            url = 'https://ipapi.co/{}/json/'.format(ip)
+        else:
+            url = 'https://ipapi.co/json/'
+
     if key or API_KEY:
         url = '{}?key={}'.format(url, (key or API_KEY))
 
     response = get(url, headers=headers)
-    return response.json()
 
-
-def field(field, ip=None, key=None):
-    ''' Get specific geolocation field (as text) for given IP address '''
-    if ip:
-        url = 'https://ipapi.co/{}/{}/'.format(ip, field)
+    if field:
+        return response.text
     else:
-        url = 'https://ipapi.co/{}/'.format(field)
-    if key or API_KEY:
-        url = '{}?key={}'.format(url, (key or API_KEY))
-
-    response = get(url, headers=headers)
-    return response.text
+        return response.json()
 
 
-def main(argv=None):
-    field_list = ['ip', 'city', 'region', 'country', 'postal', 'latitude', 'longitude', 'timezone', 'latlong']
-    
+
+def main(argv=None):    
     argv = argv or sys.argv[1:]
     parser = argparse.ArgumentParser(description='IP address location API : https://ipapi.co')
-    parser.add_argument('-i', '--ip', dest='ip', help='IP address') 
-    parser.add_argument('-f', '--field', dest='field', help='specific field e.g. {}'.format(', '.join(field_list)), default=None) 
+    parser.add_argument('-i', '--ip', dest='ip', help='IP address', default=None) 
+    parser.add_argument('-f', '--field', dest='field', help='specific field e.g. {}'.format(', '.join(field_list))) 
     parser.add_argument('-k', '--key', dest='key', help='API key', default=None) 
     args = parser.parse_args(argv)
 
-    if args.field and (args.field not in field_list):
-        print 'Invalid field : {}'.format(args.field)
-        return
-
-    if args.field:
-        print field(args.field, args.ip, args.key)
-    else:
-        print location(args.ip, args.key)
+    print location(args.ip, args.key, args.field)
 
 
 if __name__ == "__main__":       
     sys.exit(main())   
+
