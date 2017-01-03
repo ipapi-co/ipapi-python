@@ -79,9 +79,9 @@ API key can be specified in the following ways :
 3. As a function argument e.g. `ipapi.location(ip='8.8.8.8', key='secret-key')` or `ipapi.location(ip='8.8.8.8', key='secret-key', field='city')`
 
 ### Notes
-- All function arguments (`ip`, `key`, `field`) are optional . To skip an argument, use `None` or an empty string `''`.
-  `ipapi.location(ip='8.8.8.8', key=None, field='city')`
-  `ipapi.location(ip='8.8.8.8', key='',   field='city')`    
+- All function arguments (`ip`, `key`, `field`) are optional . To skip an argument, use `None` or an empty string `''`.  
+  `ipapi.location(ip='8.8.8.8', key=None, field='city')`  
+  `ipapi.location(ip='8.8.8.8', key='',   field='city')`      
 
 
 ### Error
