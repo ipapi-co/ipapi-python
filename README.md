@@ -82,3 +82,29 @@ API key can be specified in the following ways :
 - All function arguments (`ip`, `key`, `field`) are optional . To skip an argument, use `None` or an empty string `''`.
   `ipapi.location(ip='8.8.8.8', key=None, field='city')`
   `ipapi.location(ip='8.8.8.8', key='',   field='city')`    
+
+
+### Error
+- If you are getting `requests.exceptions.SSLError` (see below), then you need to run :
+
+  `pip install requests[security]` 
+  
+```
+
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "ipapi.py", line 45, in field
+        response = get(url, headers=headers)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 55, in get
+        return request('get', url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
+        return session.request(method=method, url=url, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
+        resp = self.send(prep, **send_kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
+        r = adapter.send(request, **kwargs)
+      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 385, in send
+        raise SSLError(e)
+    requests.exceptions.SSLError: [Errno 1] _ssl.c:510: error:14077438:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error
+```
+
