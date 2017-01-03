@@ -1,3 +1,3 @@
 
-from ipapi import location, field
+from ipapi import location
 
