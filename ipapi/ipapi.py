@@ -56,7 +56,7 @@ def main(argv=None):
     parser.add_argument('-k', '--key', dest='key', help='API key', default=None) 
     args = parser.parse_args(argv)
 
-    print location(args.ip, args.key, args.field)
+    print (location(args.ip, args.key, args.field))
 
 
 if __name__ == "__main__":       
