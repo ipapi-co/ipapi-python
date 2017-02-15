@@ -1,3 +1,2 @@
-
-from ipapi import location
-
+__all__ = ['ipapi']
+from .ipapi import location
