@@ -18,7 +18,16 @@ python setup.py install
 
 ```
 import ipapi
+ipapi.location(ip=None, key=None, field=None)
+```
 
+- `ip`    : use specified IP address. If omitted or `None`, use your machine's IP address
+- `key`   : For paid plans
+- `field` : get specified field (ip, city, country, timezone etc.) as text. If omitted or `None`, get entire location data as `JSON`
+
+#### Examples
+
+```
 ipapi.location()
 # Gets complete location for your IP address
 {u'city': u'Wilton', u'ip': u'50.1.2.3', u'region': u'California', u'longitude': -121.2429, u'country': u'US', u'latitude': 38.3926, u'timezone': u'America/Los_Angeles', u'postal': u'95693'}
@@ -51,6 +60,12 @@ u'US'
 
 ### From command line
 ```
+$ python ipapi.py -i <IP address> -f <field> -k <API KEY>
+```
+
+#### Examples
+
+```
 $ python ipapi.py 
 {u'city': u'Wilton', u'ip': u'50.1.2.3', u'region': u'California', u'longitude': -121.2429, u'country': u'US', u'latitude': 38.3926, u'timezone': u'America/Los_Angeles', u'postal': u'95693'}
 
@@ -79,32 +94,6 @@ API key can be specified in the following ways :
 3. As a function argument e.g. `ipapi.location(ip='8.8.8.8', key='secret-key')` or `ipapi.location(ip='8.8.8.8', key='secret-key', field='city')`
 
 ### Notes
-- All function arguments (`ip`, `key`, `field`) are optional . To skip an argument, use `None` or an empty string `''`.  
-  `ipapi.location(ip='8.8.8.8', key=None, field='city')`  
-  `ipapi.location(ip='8.8.8.8', key='',   field='city')`      
-
-
-### Error
-- If you are getting `requests.exceptions.SSLError` (see below), then you need to run :
-
-  `pip install requests[security]` 
-  
-```
-
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-      File "ipapi.py", line 45, in field
-        response = get(url, headers=headers)
-      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 55, in get
-        return request('get', url, **kwargs)
-      File "/usr/lib/python2.7/dist-packages/requests/api.py", line 44, in request
-        return session.request(method=method, url=url, **kwargs)
-      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request
-        resp = self.send(prep, **send_kwargs)
-      File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send
-        r = adapter.send(request, **kwargs)
-      File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 385, in send
-        raise SSLError(e)
-    requests.exceptions.SSLError: [Errno 1] _ssl.c:510: error:14077438:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error
-```
-
+- All function arguments (`ip`, `key`, `field`) are optional . To skip an argument, use `None` or an empty string `''`.
+  `ipapi.location(ip='8.8.8.8', key=None, field='city')`
+  `ipapi.location(ip='8.8.8.8', key='',   field='city')`    
