@@ -1,99 +1,295 @@
 
-# Python bindings for ipapi (IP address location API)
+
+# [ipapi](https://ipapi.co/) Python Library
+## IP Address Location | IP Lookup | IP Geolocation API
+### by Kloudend, Inc.
+
+The ipapi Python library provides convenient access to the IP address location service from applications written in the Python language. It makes it easy to harness the potential of the IP geolocation API. 
+
+The service is powered by https://ipapi.co/ and owned by Kloudend, Inc.
+
+## Documentation
+See the  [ipapi API docs]([https://ipapi.co/api/?python#location-of-clients-ip](https://ipapi.co/api/?python#location-of-clients-ip))
 
 ## Installation
 
 ```
-pip install ipapi
+pip install --upgrade ipapi
 ```
 or
-
+Install from source with:
 ```
 python setup.py install
 ```
+### Requirements
 
-## Usage
+Python 2.7+ or Python 3.4+ (PyPy supported)
 
-### From your Python code
+## QuickStart
+```python
+>>> import ipapi
 
+>>> ipapi.location()
+{
+  "ip": "8.8.8.8",
+  "city": "Mountain View",
+  "country": "US",
+  "timezone": "America/Los_Angeles",
+  ...
+}
 ```
+
+## Usage : As an IP Location library
+
+```python
 import ipapi
-ipapi.location(ip=None, key=None, field=None)
-```
 
-- `ip`    : use specified IP address. If omitted or `None`, use your machine's IP address
-- `key`   : For paid plans
-- `field` : get specified field (ip, city, country, timezone etc.) as text. If omitted or `None`, get entire location data as `JSON`
+ipapi.location(ip, key, output)
+```
+|Argument|Description  |
+|--|--|
+|`ip`| IP Address that you wish to locate.<br>If omitted, it defaults to the your machine's IP  |
+|`key`| API key (for paid plans).<br>Omit it or set key=`None` for usage under [free IP Location]([https://ipapi.co/free/](https://ipapi.co/free/)) tier.  |
+|`output`| The desired output from the API. <br>For complete IP location object, valid values are `json`, `csv`, `xml`, `yaml`.<br>To retrieve a specific field (e.g. city, country etc. as text), valid values are [1].<br>If omitted or `None`, gets the entire location data as `json` |
+
+[1] Fields supported by the API : `ip`, `city`, `region`, `region_code`, `country`, `country_code`, `country_code_iso3`, `country_capital`, `country_tld`, `country_name`, `continent_code`, `in_eu`, `postal`, `latitude`, `longitude`, `timezone`, `utc_offset`, `country_calling_code`, `currency`, `currency_name`, `languages`, `country_area`, `country_population`, `latlong`, `asn`, `org`
 
 #### Examples
 
+1. Find the **location of your IP address** (suppose your IP is '50.1.2.3')
+```python
+>>> ipapi.location()
 ```
-ipapi.location()
-# Gets complete location for your IP address
-{u'city': u'Wilton', u'ip': u'50.1.2.3', u'region': u'California', u'longitude': -121.2429, u'country': u'US', u'latitude': 38.3926, u'timezone': u'America/Los_Angeles', u'postal': u'95693'}
+The output would be a `JSON` object like this : 
+```json
+{
+    "ip": "50.1.2.3",
+    "city": "Sacramento",
+    "region": "California",
+    "region_code": "CA",
+    "country": "US",
+    "country_code": "US",
+    "country_code_iso3": "USA",
+    "country_capital": "Washington",
+    "country_tld": ".us",
+    "country_name": "United States",
+    "continent_code": "NA",
+    "in_eu": false,
+    "postal": "95817",
+    "latitude": 38.548,
+    "longitude": -121.4597,
+    "timezone": "America/Los_Angeles",
+    "utc_offset": "-0700",
+    "country_calling_code": "+1",
+    "currency": "USD",
+    "currency_name": "Dollar",
+    "languages": "en-US,es-US,haw,fr",
+    "country_area": 9629091.0,
+    "country_population": 310232863.0,
+    "asn": "AS7065",
+    "org": "SONOMA"
+}
+```
 
-ipapi.location(None, None, 'ip')
-# Gets my external IP address
-u'50.1.2.3'
+2. Find the **location of an IP address**
+```python
+>>> ipapi.location(ip='8.8.8.8')
+```
+```json
+{
+    "ip": "8.8.8.8",
+    "city": "Mountain View",
+    "region": "California",
+    ...
+}
+```
+You can also use an IPv6 address e.g.
+```python
+>>> ipapi.location(ip='2001:4860:1::1')
+```
 
-ipapi.location(None, None, 'city')
-# Gets your city name
-u'Wilton'
+3. Find the **location of an IP address** in `xml`format (other formats :`json`, `csv`,`yaml`)
+```python
+>>> ipapi.location(ip='8.8.8.8', output='xml')
+```
+```xml
+'<?xml version="1.0" encoding="utf-8"?>
+  <root>
+    <ip>8.8.8.8</ip>
+    <city>Mountain View</city>
+    ...
+  </root>'
+```
 
-ipapi.location(None, None, 'country')
-# Gets your country
-u'US'
+4. Find **your external IP address**
+```python
+>>> ipapi.location(output='ip')
+```
+```
+'50.1.2.3'
+```
 
-ipapi.location('8.8.8.8')
-# Gets complete location for IP address 8.8.8.8
-{u'city': u'Mountain View', u'ip': u'8.8.8.8', u'region': u'California', u'longitude': -122.0838, u'country': u'US', u'latitude': 37.386, u'timezone': u'America/Los_Angeles', u'postal': u'94035'}
-
-ipapi.location('8.8.8.8', None, 'city')
-# Gets city name for IP address 8.8.8.8
-u'Mountain View'
-
-ipapi.location('8.8.8.8', None, 'country')
-# Gets country for IP address 8.8.8.8
-u'US'
+5. Find the **city from an IP address**
+```python
+>>> ipapi.location(ip='8.8.8.8', output='city')
+```
+```
+'Mountain View'
+```
+6. Find the **country code from an IP address**
+```python
+>>> ipapi.location(ip='8.8.8.8', output='country_code')
+```
+```
+'US'
+```
+7. Find the **region of an IP address**
+```python
+>>> ipapi.location(ip='8.8.8.8', output='region_code')
+```
+```
+'CA'
+```
+8. Find if **IP address is located in European Union**
+```python
+>>> ipapi.location(ip='8.8.8.8', output='in_eu')
+```
+```
+'False'
+```
+9. Find the **latitude and longitude of an IP address**
+```python
+>>> ipapi.location(ip='1.2.3.4', output='latlong')
+```
+```
+'-27.473101,153.014046'
+```
+10. Find the **postal code of an IP address**
+```python
+>>> ipapi.location(ip='1.2.3.4', output='postal')
+```
+```
+'4101'
+```
+11. Find the **timezone of an IP address**
+```python
+>>> ipapi.location(ip='1.2.3.4', output='timezone')
+```
+```
+'Australia/Brisbane'
+```
+12. Find the **currency of an IP address**
+```python
+>>> ipapi.location(ip='1.2.3.4', output='currency')
+```
+```
+'AUD'
+```
+13. Find the **ASN of an IP address**
+```python
+>>> ipapi.location(ip='1.1.1.1', output='asn')
+```
+```
+'AS13335'
+```
+14. Find the **Organization of an IP address**
+```python
+>>> ipapi.location(ip='8.8.8.8', output='org')
+```
+```
+'GOOGLE'
 ```
 
 
-### From command line
+
+## Usage : As an IP Location command line utility
+
+```bash
+$ python ipapi -i <IP Address> -k <API KEY> -o <Output Format>
 ```
-$ python ipapi.py -i <IP address> -f <field> -k <API KEY>
-```
+where the options are defined above.
 
 #### Examples
 
+1. Get your IP Geolocation
+```bash
+$ python ipapi
+
 ```
-$ python ipapi.py 
-{u'city': u'Wilton', u'ip': u'50.1.2.3', u'region': u'California', u'longitude': -121.2429, u'country': u'US', u'latitude': 38.3926, u'timezone': u'America/Los_Angeles', u'postal': u'95693'}
-
-$ python ipapi.py  -f ip
-50.1.2.3
-
-$ python ipapi.py  -f city
-Wilton
-
-$ python ipapi.py -i 8.8.8.8
-{u'city': u'Mountain View', u'ip': u'8.8.8.8', u'region': u'California', u'longitude': -122.0838, u'country': u'US', u'latitude': 37.386, u'timezone': u'America/Los_Angeles', u'postal': u'94035'}
-
-$ python ipapi.py -i 8.8.8.8 -f city
-Mountain View
-
-$ python ipapi.py -i 8.8.8.8 -f country
-US
+The output would be a `JSON` object like this (assuming your IP is `50.1.2.3`) : 
+```json
+{
+    "ip": "50.1.2.3",
+    "city": "Sacramento",
+    "region": "California",
+    "region_code": "CA",
+    "country": "US",
+    "country_code": "US",
+    "country_code_iso3": "USA",
+    "country_capital": "Washington",
+    "country_tld": ".us",
+    "country_name": "United States",
+    "continent_code": "NA",
+    "in_eu": false,
+    "postal": "95817",
+    "latitude": 38.548,
+    "longitude": -121.4597,
+    "timezone": "America/Los_Angeles",
+    "utc_offset": "-0700",
+    "country_calling_code": "+1",
+    "currency": "USD",
+    "currency_name": "Dollar",
+    "languages": "en-US,es-US,haw,fr",
+    "country_area": 9629091.0,
+    "country_population": 310232863.0,
+    "asn": "AS7065",
+    "org": "SONOMA"
+}
+```
+2. Get the geolocation of an IP address
+```bash
+$ python ipapi -i '8.8.8.8'
+```
+```json
+{
+    "ip": "8.8.8.8",
+    "city": "Mountain View",
+    "region": "California",
+    ...
+}
 ```
 
-### With API Key
+3. Get the location of an IP in `xml` format (other formats : `json`, `csv`, `yaml`)
+```bash
+$ python ipapi -i '8.8.8.8' -o xml
+```
 
-API key can be specified in the following ways : 
+```xml
+'<?xml version="1.0" encoding="utf-8"?>
+  <root>
+    <ip>8.8.8.8</ip>
+    <city>Mountain View</city>
+    ...
+  </root>'
+```
 
-1. Inside `ipapi.py` by setting `API_KEY` variable
-2. Via command line with the `-k` option
-3. As a function argument e.g. `ipapi.location(ip='8.8.8.8', key='secret-key')` or `ipapi.location(ip='8.8.8.8', key='secret-key', field='city')`
+4. Get your external IP address
+```bash
+$ python ipapi -o ip
+```
+```
+'50.1.2.3'
+```
 
-### Notes
-- All function arguments (`ip`, `key`, `field`) are optional . To skip an argument, use `None` or an empty string `''`.
-  `ipapi.location(ip='8.8.8.8', key=None, field='city')`
-  `ipapi.location(ip='8.8.8.8', key='',   field='city')`    
+5. Get the city of an IP address
+```bash
+$ python ipapi -i '8.8.8.8' -o city
+```
+```
+'Mountain View'
+```
+
+
+
+
+
