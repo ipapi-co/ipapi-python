@@ -1,15 +1,14 @@
 
 
-# [ipapi](https://ipapi.co/) Python Library
+# ipapi Python Library ~ [ipapi.co](https://ipapi.co/) by Kloudend, Inc.
 ## IP Address Location | IP Lookup | IP Geolocation API
-### by Kloudend, Inc.
 
 The ipapi Python library provides convenient access to the IP address location service from applications written in the Python language. It makes it easy to harness the potential of the IP geolocation API. 
 
-The service is powered by https://ipapi.co/ and owned by Kloudend, Inc.
+Details on [free IP lookup](https://ipapi.co/free/) and [ipapi pricing plans](https://ipapi.co/pricing/)
 
 ## Documentation
-See the  [ipapi API docs]([https://ipapi.co/api/?python#location-of-clients-ip](https://ipapi.co/api/?python#location-of-clients-ip))
+See the [ipapi API docs](https://ipapi.co/api/?python#location-of-clients-ip)
 
 ## Installation
 
@@ -46,9 +45,10 @@ import ipapi
 
 ipapi.location(ip, key, output)
 ```
+### [Options](#options)
 |Argument|Description  |
 |--|--|
-|`ip`| IP Address that you wish to locate.<br>If omitted, it defaults to the your machine's IP  |
+|`ip`| IP Address (IPv4 or IPv6) that you wish to locate.<br>If omitted, it defaults to the your machine's IP  |
 |`key`| API key (for paid plans).<br>Omit it or set key=`None` for usage under [free IP Location]([https://ipapi.co/free/](https://ipapi.co/free/)) tier.  |
 |`output`| The desired output from the API. <br>For complete IP location object, valid values are `json`, `csv`, `xml`, `yaml`.<br>To retrieve a specific field (e.g. city, country etc. as text), valid values are [1].<br>If omitted or `None`, gets the entire location data as `json` |
 
@@ -56,11 +56,11 @@ ipapi.location(ip, key, output)
 
 #### Examples
 
-1. Find the **location of your IP address** (suppose your IP is '50.1.2.3')
+1. Find the **location of your IP address**
 ```python
 >>> ipapi.location()
 ```
-The output would be a `JSON` object like this : 
+The output would be a `JSON` object like this (assuming your IP is '50.1.2.3') : 
 ```json
 {
     "ip": "50.1.2.3",
@@ -150,7 +150,7 @@ You can also use an IPv6 address e.g.
 ```
 'CA'
 ```
-8. Find if **IP address is located in European Union**
+8. Find if an **IP address is located in the European Union**
 ```python
 >>> ipapi.location(ip='8.8.8.8', output='in_eu')
 ```
@@ -206,8 +206,9 @@ You can also use an IPv6 address e.g.
 
 ```bash
 $ python ipapi -i <IP Address> -k <API KEY> -o <Output Format>
+$ python ipapi --ip <IP Address> --key <API KEY> --output <Output Format>
 ```
-where the options are defined above.
+where the [options](#options) ip, key, output are defined above.
 
 #### Examples
 
