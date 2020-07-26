@@ -1,64 +1,90 @@
 
-# ipapi Python bindings (https://ipapi.co)
-# API docs at https://ipapi.co/api
+''' 
 
-import sys
-import argparse
+IP Address Location & Geolocation API 
+
+(c) ipapi by Kloudend, Inc. | https://ipapi.co/
+
+API Docs : https://ipapi.co/api/
+
+'''
+
 from requests import get
 
-
-API_KEY = ''
-
-headers    = {'user-agent': 'ipapi/ipapi-python/0.5.1'}
-
-field_list = ['ip', 'city', 'region', 'country', 'postal',
-              'latitude', 'longitude', 'timezone', 'latlong']
+try:
+    from .exceptions import RateLimited, PageNotFound, AuthorizationFailed
+except (SystemError, ImportError):  
+    from exceptions import RateLimited, PageNotFound, AuthorizationFailed
 
 
+field_list = ['ip', 'city', 'region', 'region_code', 'country', 'country_code', 'country_code_iso3', 
+              'country_capital', 'country_tld', 'country_name', 'continent_code', 'in_eu', 'postal', 
+              'latitude', 'longitude', 'timezone', 'utc_offset', 'country_calling_code', 'currency', 
+              'currency_name', 'languages', 'country_area', 'country_population', 'latlong', 
+              'asn', 'org']
 
-def location(ip=None, key=None, field=None):
-    ''' Get geolocation data for a given IP address
-        If field is specified, get specific field as text 
-        Else get complete location data as JSON 
+
+def build_url(ip, key, output):
+    url = 'https://ipapi.co/'
+
+    if ip:
+        url = '{}{}/'.format(url, ip)
+
+    url = '{}{}/'.format(url, output)
+
+    if key:
+        url = '{}?key={}'.format(url, key)
+
+    return url
+
+
+def parse_response(resp):
+    if resp.headers['Content-Type'] == 'application/json':
+        return resp.json()
+    else:
+        return resp.text
+
+
+def location(ip=None, key=None, output=None, options=None):
+    ''' 
+    Get Geolocation data and related information for an IP address 
+
+    - ip      : IP Address (IPv4 or IPv6) that you wish to locate.
+                If omitted, it defaults to the your machine's IP
+    - key     : API key (for paid plans).
+                Omit it or set key=None for usage under free IP Location tier.
+    - output  : The desired output from the API.
+                For complete IP location object, valid values are json, csv, xml, yaml.
+                To retrieve a specific field (e.g. city, country etc. as text), valid values are [1].
+                If omitted or None, gets the entire location data as json
+    - options : request options supported by python requests library
+    
     '''
+    
+    if output is None:
+        output = 'json'
 
-    if field and (field not in field_list):
-        return 'Invalid field'
+    if options is None:
+        options = {}
 
-    if field:
-        if ip:
-            url = 'https://ipapi.co/{}/{}/'.format(ip, field)
-        else:
-            url = 'https://ipapi.co/{}/'.format(field)
+    url = build_url(ip, key, output)
+    
+    headers = {
+      'user-agent': 'ipapi.co/#ipapi-python-v1.0.4'
+    }
+    
+    resp = get(url, headers=headers, **options)
+    
+    data = parse_response(resp)
+
+    if resp.status_code == 200:
+        return data
+    elif resp.status_code == 403:
+        raise AuthorizationFailed(data)
+    elif resp.status_code == 404:
+        raise PageNotFound(data)
+    elif resp.status_code == 429:
+        raise RateLimited(data)
     else:
-        if ip:
-            url = 'https://ipapi.co/{}/json/'.format(ip)
-        else:
-            url = 'https://ipapi.co/json/'
-
-    if key or API_KEY:
-        url = '{}?key={}'.format(url, (key or API_KEY))
-
-    response = get(url, headers=headers)
-
-    if field:
-        return response.text
-    else:
-        return response.json()
-
-
-
-def main(argv=None):    
-    argv = argv or sys.argv[1:]
-    parser = argparse.ArgumentParser(description='IP address location API : https://ipapi.co')
-    parser.add_argument('-i', '--ip', dest='ip', help='IP address', default=None) 
-    parser.add_argument('-f', '--field', dest='field', help='specific field e.g. {}'.format(', '.join(field_list))) 
-    parser.add_argument('-k', '--key', dest='key', help='API key', default=None) 
-    args = parser.parse_args(argv)
-
-    print (location(args.ip, args.key, args.field))
-
-
-if __name__ == "__main__":       
-    sys.exit(main())   
+        raise Exception(data)
 
