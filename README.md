@@ -205,7 +205,10 @@ You can also use an IPv6 address e.g.
 ## Usage : As an IP Location command line utility
 
 ```bash
+ln -s /<virtual-env-path>/lib/python3.8/site-packages/ipapi ipapi
+
 $ python ipapi -i <IP Address> -k <API KEY> -o <Output Format>
+OR
 $ python ipapi --ip <IP Address> --key <API KEY> --output <Output Format>
 ```
 where the [options](#options) ip, key, output are defined above.
