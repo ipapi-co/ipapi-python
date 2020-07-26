@@ -22,7 +22,7 @@ python setup.py install
 ```
 ### Requirements
 
-Python 2.7+ or Python 3.4+ (PyPy supported)
+Python 2.7+ or Python 3.4+
 
 ## QuickStart
 ```python
