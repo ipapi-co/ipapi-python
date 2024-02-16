@@ -70,7 +70,7 @@ def location(ip=None, key=None, output=None, options=None):
     url = build_url(ip, key, output)
     
     headers = {
-      'user-agent': 'ipapi.co/#ipapi-python-v1.0.4'
+      'user-agent': 'ipapi.co/#ipapi-python-v1.1.2'
     }
     
     resp = get(url, headers=headers, **options)
